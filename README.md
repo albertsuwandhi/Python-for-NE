@@ -1,2 +1,2 @@
 # Python-for-NE
-My Python Learning Journey for Network Programmability and Automation
+My Python Learning Journey towards Network Programmability and Automation

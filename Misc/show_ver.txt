@@ -1,0 +1,2 @@
+CISCO IOS Software, C880 Software(C880DATA-UNIVERSALK9-M), Version 15.4(2)T1, RELEASE SOFTWARE (fc3)
+Configuration register is 0x2102

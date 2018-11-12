@@ -1,0 +1,5 @@
+1. virtualenv venv_1
+2. venv_1\Scripts\activate
+3. deactivate
+
+

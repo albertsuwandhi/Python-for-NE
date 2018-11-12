@@ -1,0 +1,13 @@
+hostname : R1
+id : 1
+vlans:
+  10: Management
+  20: IT
+  30: Guest
+bgp:
+  - neighbour: 10.10.10.10
+    remote_as: 10
+  - neighbour: 20.20.20.20
+    remote_as: 20
+  - neighbour: 30.30.30.30
+    remote_as: 30

@@ -1,0 +1,37 @@
+1. ipython = more interactive python
+2. # = comment
+3. '''
+   this is comment
+   '''
+   Comment multiple lines
+4. Make py file executable : chmod 755 test.py
+   #!/usr/bin/env python3
+5. USE 'dir' and 'help'
+6. ip_addr = '192.168.1.1'
+   id(ip_addr)
+7. from __future__ import print_function ==> python2 to recognize and use python3 print format
+8. python use identation for block of codes
+9. import this ==> Show Zen of Python
+10. my_str=u'unicode' ==> Unicode String Types (python2)
+    default python3 string is UNICODE, but type(my_str) will show as str only
+11. PYTHON2 : from __future__ import unicode_literals
+12. ==, !=, >, >=, <, <= (COMPARISON)
+13. ip_addr = '192.168.1.254' Ex : '192.168' in ip_addr will be TRUE, '192.167' not in ip_adrr will be TRUE
+14. ip_addr = '192.168.1.1' Ex : len(ip_addr)
+15. String Index : from left : ip_addr[0], from right : ip_addr[-1]
+16. bin(255) will be '0b11111111', hex(255) will be '0xFF'. It return strings. int(my_var,2). 2 is the base of my_var
+17. String strip : my_str = "demo 1 2     " mystr.strip(), also see lstrip,rstrip
+18. ip_addr = '192.168.1.254', ip_addr.split(".") will be ['192', '168', '1', '254']
+
+
+
+
+
+
+
+
+
+
+
+
+

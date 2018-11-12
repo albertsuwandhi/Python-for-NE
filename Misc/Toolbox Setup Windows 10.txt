@@ -1,0 +1,25 @@
+1. INSTALL GIT : GIT BASH
+2. PROGRAMMING LANGUAGE : PYTHON - Install 2 Version : 2 and 3
+3. Create Virtual Env :
+	py -3 -V
+	py -3 -m venv py3-venv
+	source py3-venv/Scripts/activate
+	pip install requests
+	pip freeze
+	deactivate
+4. Issue in MINGW64 : Python can not run when we type python
+   Solution : python -i or winpty "C:\Users\AS40011\AppData\Local\Programs\Python\Python37-32\python.exe"
+5. Clone : hpreston/python_networking
+6. Select and Install Code Editor : Atom, VSCode, etc
+7. Install POSTMAN and learn REST API
+8. Install Browser and learn Developer Tools
+9. Install Docker CE
+10. Install Windows Sub System For Linux and Install Ansible on the top of WSL
+
+
+
+
+		
+
+
+
