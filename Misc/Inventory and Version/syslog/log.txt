@@ -1,4 +1,10 @@
-2018-12-03 16:43:52 :2018-12-03 16:43:52 : Access-Switch-252 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
-2018-12-03 16:43:59 :2018-12-03 16:43:59 : Access-Switch-251 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
-2018-12-03 16:45:49 :2018-12-03 16:45:49 : Access-Switch-252 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
-2018-12-03 16:45:57 :2018-12-03 16:45:57 : Access-Switch-251 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
+
+2018-12-05 08:35:07 : Access-Switch-252 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
+2018-12-05 08:35:15 : Access-Switch-251 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
+2018-12-05 08:35:57 : Access-Switch-252 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
+2018-12-05 08:36:05 : Access-Switch-251 --> ('12.2(55)SE7', 'WS-C2960S-48TS-L')
+2018-12-05 08:36:15 : Successfully connect to 10.8.32.252
+2018-12-05 08:36:17 : Successfully backup device 10.8.32.252 
+2018-12-05 08:36:18 : Successfully connect to 10.8.32.251
+2018-12-05 08:36:20 : Successfully backup device 10.8.32.251 
+2018-12-05 08:36:20 : Attempt to backup 2 devices -> Success : 2, Failure : 0 

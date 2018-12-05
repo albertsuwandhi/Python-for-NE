@@ -11,16 +11,15 @@ from openpyxl import Workbook
 from netmiko import ConnectHandler
 from datetime import datetime
 
-
 def time_log():
     time_log_stamp = datetime.now()
     log_time = time_log_stamp.strftime('%Y-%m-%d %H:%M:%S')
     return log_time
 
-
 def log(write, filename):
     with open(filename, 'a') as writelog:
-        output = '%s :' % time_log()
+        #output = '%s : ' % time_log()
+        output = "{} : ".format(time_log())
         output += write
         writelog.write(output)
 
@@ -89,10 +88,13 @@ def excel_to_lists(filename):
 def main():
     inventory_file = 'data/inventory.xlsx'
     data_log = 'syslog/log.txt'
-    print('-'*80)
+    print('-'*65)
     #device_list = excel_to_lists(inventory_file)
     while True:
+        print("\n")
+        print('------------ CISCO inventory and Backup Tools -------------------')
         print('Please make sure you have fill inventory data in "data" directory')
+        print('-'*65)
         print('[1] Collect Software Version')
         print('[2] Backup Configuration')
         print('[q] exit\n')
@@ -104,7 +106,7 @@ def main():
         elif input_select == '1':
             '''create file software inventory'''
             #inventory_file = 'data/inventory.xlsx'
-            print('-'*80)
+            print('-'*100)
             device_list = excel_to_lists(inventory_file)
             wb = Workbook()
             ws = wb.active
@@ -126,11 +128,13 @@ def main():
                 netconnect = ConnectHandler(**device_info)
                 result = netconnect.send_command("show version")
                 netconnect.disconnect()
+                #parse output 
                 sw_inventory = sw_version(result, device["type"])
-                print('%s : %s --> partnumber : %s, sw version : %s' %(time_log(), device['hostname'], sw_inventory[1], sw_inventory[0]))
-                log('%s : %s --> %s\n' %(time_log(), device['hostname'], sw_inventory), data_log)
-                
-                '''load workbook'''
+                print('{} --> partnumber : {}, sw version : {}'.format(device['hostname'], sw_inventory[1], sw_inventory[0]))
+                log('{} --> {}\n'.format(device['hostname'], sw_inventory), data_log)
+                #print('%s : %s --> partnumber : %s, sw version : %s' %(time_log(), device['hostname'], sw_inventory[1], sw_inventory[0]))
+                #log('%s : %s --> %s\n' %(time_log(), device['hostname'], sw_inventory), data_log)
+                print('-'*100)
                 wb = load_workbook(swinvent_dir)
                 ws = wb.active
                 ws.cell(row=row, column=1, value=device['hostname'])
@@ -140,12 +144,13 @@ def main():
                 wb.save(swinvent_dir)
                 row += 1
         elif input_select == '2':
+            backup_path = "backup/{}.cfg"
             success = 0
             failure = 0
             iteration = 0
             #inventory_file = input("Please input the path of XLSX file (Ex: D:\inventory.xlsx): ")
             inventory_file = 'data/inventory.xlsx'
-            print('-'*80)
+            print('-'*100)
             device_list = excel_to_lists(inventory_file)
             #print(json.dumps(output, indent=4))
 
@@ -156,8 +161,8 @@ def main():
                 try:
                     ipaddress.ip_address(device["address"])
                 except ValueError:
-                    print("Invalid IP Address Format : {} --> Please check IP Address on row number {}!".format(
-                        device["address"], iteration))
+                    print("Invalid IP Address Format : {} --> Please check IP Address on row number {}!".format(device["address"], iteration))
+                    log("Invalid IP Address Format : {} --> Please check IP Address on row number {}!\n".format(device["address"], iteration),data_log)
                     failure += 1
                     continue
                 device_info = {"ip": device["address"],
@@ -166,14 +171,14 @@ def main():
                                }
                 #print(device_info)
                 try:
-                    ssh_client.connect(
-                        device_info["ip"], username=device_info["username"], password=device_info["password"])
+                    ssh_client.connect(device_info["ip"], username=device_info["username"], password=device_info["password"])
                 except:
-                    print("SSH Connection Error for {}. Please check your connection or credentials!".format(
-                        device_info["ip"]))
+                    print("SSH Connection Error for {}. Please check your connection or credentials!".format(device_info["ip"]))
+                    log("SSH Connection Error for {}. Please check your connection or credentials!\n".format(device_info["ip"]), data_log)
                     failure += 1
                     continue
                 print("Successfully connect to {}".format(device_info["ip"]))
+                log("Successfully connect to {}\n".format(device_info["ip"]), data_log)
                 success += 1
                 ssh_conn = ssh_client.invoke_shell()
                 ssh_conn.send("terminal length 0\n")
@@ -184,17 +189,17 @@ def main():
                     output = ssh_conn.recv(65535)
                 # Python3 treat default to binary raw bits, not string implicitly --> use .decode()
                 output_str = str(output.decode())
-                output_str = re.search(
-                    r"!.*end", output_str, flags=re.DOTALL).group(0)
-                with open("{}.cfg".format(device_info["ip"]), mode="w") as f:
+                output_str = re.search(r"!.*end", output_str, flags=re.DOTALL).group(0)
+                with open(backup_path.format(device_info["ip"]), mode="w") as f:
                     f.write(output_str)
-                print("Successfully backup device {}".format(
-                    device_info["ip"]))
-                print('-'*80)
+                print("Successfully backup device {}".format(device_info["ip"]))
+                log("Successfully backup device {} \n".format(device_info["ip"]),data_log)
+                print('-'*100)
             print("Attempt to backup {} devices".format(success+failure))
             print("Success : {}".format(success))
             print("Failure : {}".format(failure))
-            print('-'*80)
+            log("Attempt to backup {} devices -> Success : {}, Failure : {} \n".format(success+failure,success,failure), data_log)
+            print('-'*100)
 
 if __name__ == '__main__':
     main()
