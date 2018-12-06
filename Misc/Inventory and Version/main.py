@@ -126,6 +126,8 @@ def main():
                 }
 
                 netconnect = ConnectHandler(**device_info)
+                #get the real device name, not from Excel file
+                dev_hostname = netconnect.find_prompt()[:-1]
                 result = netconnect.send_command("show version")
                 netconnect.disconnect()
                 #parse output 
@@ -137,7 +139,9 @@ def main():
                 print('-'*100)
                 wb = load_workbook(swinvent_dir)
                 ws = wb.active
-                ws.cell(row=row, column=1, value=device['hostname'])
+                # Populate excel file with hostname from excel file or real hostname
+                #ws.cell(row=row, column=1, value=device['hostname'])
+                ws.cell(row=row, column=1, value=dev_hostname)
                 ws.cell(row=row, column=2, value=device['address'])
                 ws.cell(row=row, column=3, value=sw_inventory[1])
                 ws.cell(row=row, column=4, value=sw_inventory[0])
