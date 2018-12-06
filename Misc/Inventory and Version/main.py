@@ -6,6 +6,7 @@ import time
 import re
 import ipaddress
 import json
+import textfsm
 from openpyxl import load_workbook
 from openpyxl import Workbook
 from netmiko import ConnectHandler
@@ -86,7 +87,7 @@ def excel_to_lists(filename):
 
 
 def main():
-    inventory_file = 'data/inventory.xlsx'
+    #inventory_file = 'data/inventory.xlsx'
     data_log = 'syslog/log.txt'
     print('-'*65)
     #device_list = excel_to_lists(inventory_file)
@@ -97,6 +98,7 @@ def main():
         print('-'*65)
         print('[1] Collect Software Version')
         print('[2] Backup Configuration')
+        print('[3] Collect VLAN Database')
         print('[q] exit\n')
         input_select = input('Please select function above : ')
         input_select = str(input_select)
@@ -105,7 +107,7 @@ def main():
             sys.exit()
         elif input_select == '1':
             '''create file software inventory'''
-            #inventory_file = 'data/inventory.xlsx'
+            inventory_file = 'data/inventory.xlsx'
             print('-'*100)
             device_list = excel_to_lists(inventory_file)
             wb = Workbook()
@@ -147,6 +149,7 @@ def main():
                 ws.cell(row=row, column=4, value=sw_inventory[0])
                 wb.save(swinvent_dir)
                 row += 1
+
         elif input_select == '2':
             backup_path = "backup/{}.cfg"
             success = 0
@@ -203,6 +206,59 @@ def main():
             print("Success : {}".format(success))
             print("Failure : {}".format(failure))
             log("Attempt to backup {} devices -> Success : {}, Failure : {} \n".format(success+failure,success,failure), data_log)
+            print('-'*100)
+        elif input_select == '3':
+            inventory_file = 'data/inventory.xlsx'
+            print('-'*100)
+            device_list = excel_to_lists(inventory_file)
+            #use TextFSM
+            template = open('template/cisco_ios_show_vlan.template')
+            wb = Workbook()
+            ws = wb.active
+            vlaninv_dir = 'data/VLAN_database.xlsx'
+            wb.save(vlaninv_dir)
+            for device in device_list:
+                vlan_list = list()
+                device_info = {
+                    'device_type': device["type"],
+                    'ip': device["address"],
+                    'username': device["username"],
+                    'password': device["password"],
+                }
+                netconnect = ConnectHandler(**device_info)
+                dev_hostname = netconnect.find_prompt()[:-1]
+                result = netconnect.send_command("show vlan")
+                result_template = textfsm.TextFSM(template)
+                vlan_data = result_template.ParseText(result)
+                for vlan in vlan_data:
+                    vlan_dict = {
+                        'id': None,
+                        'name': None,
+                        'status': None
+                    }
+                    vlan_dict['id'] = vlan[0]
+                    vlan_dict['name'] = vlan[1]
+                    vlan_dict['status'] = vlan[2]
+                    vlan_list.append(vlan_dict)
+                wb = load_workbook(vlaninv_dir)
+                ws = wb.create_sheet(dev_hostname)
+                #wb = Workbook()
+                #ws = wb.active
+                ws.cell(row=1, column=1, value='VLAN ID')
+                ws.cell(row=1, column=2, value='VLAN Name')
+                ws.cell(row=1, column=3, value='Status')
+                row = 2
+                for data in vlan_list:
+                    ws.cell(row=row, column=1, value=int(data['id']))
+                    ws.cell(row=row, column=2, value=data['name'])
+                    ws.cell(row=row, column=3, value=data['status'])
+                    row += 1
+                wb.save(vlaninv_dir)
+                print("Collect VLAN database for {} completed".format(dev_hostname))
+                log("Collect VLAN database for {} completed \n".format(dev_hostname), data_log)
+        else:
+            print('-'*100)
+            print("Please select based on the menu") 
             print('-'*100)
 
 if __name__ == '__main__':
